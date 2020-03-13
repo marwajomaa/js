@@ -32,9 +32,9 @@ console.log(isNum);
 
 //equality operator == vs strict operator ===
 const isEqual =
-  num === '0'
-    ? '==  operator dose type coercion'
-    : 'strict operator dose not type coercion';
+  num === '0' ?
+  '==  operator dose type coercion' :
+  'strict operator dose not type coercion';
 console.log(isEqual);
 
 //function statement (declaration) does not produce a value or result
@@ -43,7 +43,7 @@ function foo(_param1, _param2) {}
 
 //function expression (whenever js expect a value or result we use expression)
 
-const anotherFoo = function(job, firstName) {
+const anotherFoo = function (job, firstName) {
   switch (job) {
     case 'teacher':
       console.log(`${firstName} is a teacher`);
@@ -77,7 +77,7 @@ const isExist =
 console.log(isExist);
 
 //challange 2:38:49
-const whatTip = function(bill) {
+const whatTip = function (bill) {
   var percentage;
   switch (bill) {
     case bill < 50:
@@ -107,12 +107,12 @@ console.log(whatTip(399)); //another solution with if
 // const JohnBMI = John.BMI();
 // console.log(JohnBMI);
 
-const BMICalc = function(fullName, mass, hieght) {
+const BMICalc = function (fullName, mass, hieght) {
   return {
     fullName,
     mass,
     hieght,
-    BMI: function(mass, hieght) {
+    BMI: function (mass, hieght) {
       return this.mass / (this.hieght * this.hieght);
     }
   };
@@ -135,13 +135,14 @@ console.log(MarkBMI);
 //every function has scope which all vars inside that function belong to its scope
 //lexical scope where the function is lexically within another function and access the scope of the outer function
 //global object can be accessable from all function and nested function but not the verse
-//global excution context call the first function which added to the execution stack the first function call the second the once its finished it removed from the stack
+//global excution context call the first function which added to the execution stack the first function call the second then  once its finished it removed from the stack
 
 //This keyword
 // this keyowrd point to global object inside function and in global object
 console.log(this);
 
 calculateAge(1985);
+
 function calculateAge(year) {
   console.log(2016 - year);
   console.log(this);
@@ -152,7 +153,7 @@ function calculateAge(year) {
 var john = {
   name: 'John',
   yearOfBirth: 1990,
-  calculateAge: function() {
+  calculateAge: function () {
     console.log(this); //this is point to the john object
     console.log(2016 - this.yearOfBirth);
 
