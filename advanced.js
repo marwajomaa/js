@@ -209,6 +209,26 @@ designerQuestion('mark');
 //     console.log(score >= 5);
 // }
 // game();
+//in IIFE function can be as controller that has public or private code if we want to have public code then we write it inside the return object and the private code will be abovw the return then the diffrence will be that the private code willnot be accessed outside that function just the inner functions inside the retun (clousers) can access them
+
+const contorlFunc = (function() {
+  //private scope
+  const x = 5;
+  var add = function(y) {
+    return x + y;
+  };
+  //return all methods that we want to be public
+  return {
+    innerFun: function(y) {
+      console.log(add(y), '///////////////////////');
+    }
+  };
+})();
+//we call inner fun with iffe like this
+contorlFunc.innerFun(4);
+//without iffe we will call the function
+//contorlFunc().innerFun(4)
+//-----------------------------------------------------------------------------------------------------------
 
 (function() {
   var score = Math.random() * 10;
@@ -276,3 +296,168 @@ function interviewQuestions(job) {
 }
 
 interviewQuestions('programmer')('marwa');
+
+////////////////////////////////////////////////////////////
+
+//call, apply, bind
+
+//we can use call method to borrow a method from an object to another object without the need to repeat the same code many times
+
+const milly = {
+  name: 'milly',
+  job: 'desginer',
+  age: 24,
+  presentation: function(style, timeOfDay) {
+    if (style === 'formal') {
+      console.log(
+        'Good ' +
+          timeOfDay +
+          ", Ladies and gentlemen! I'm " +
+          this.name +
+          ", I'm a " +
+          this.job +
+          " and I'm " +
+          this.age +
+          ' years old.'
+      );
+    } else if (style === 'friendly') {
+      console.log(
+        "Hey! What's up? I'm " +
+          this.name +
+          ", I'm a " +
+          this.job +
+          " and I'm " +
+          this.age +
+          ' years old. Have a nice ' +
+          timeOfDay +
+          '.'
+      );
+    }
+  }
+};
+
+//milly.presentation('formal', 'morning');
+
+const jess = {
+  name: 'jess',
+  age: 23,
+  job: 'programmer'
+};
+
+//now we want to inhert presentation method from milly object
+//the first argument for call method is this var which we want it to refer to in the method and here we want this in presentation method to refer to jess object and the second argument will be the parameter passed to presentation method
+const jessPresentation = milly.presentation.call(jess, 'friendly', 'afternoon');
+
+//apply
+//the only difference from call that this one accept argument as an array so it takes only 2 arguments the first one is this var and the second is an array which holds the rest of the arguments
+milly.presentation.apply(jess, ['friendly', 'afternoon']);
+
+//bind
+//its similar to call method and its allow us to set this var explicitly but the diffrent that bind does not immeditily call the fun but instead it generate copy of the function so we store it somewhere
+//it return a function so we can store it in var then call this var with the  left argument
+//in a techince in which we create function based on another function but with preset parameters
+const jessPressinationWithBind = milly.presentation.bind(jess, 'friendly');
+jessPressinationWithBind('morning');
+jessPressinationWithBind('evening');
+
+const jack = {
+  name: 'jack',
+  job: 'worker',
+  age: 43
+};
+
+const jackPressinationWithBind = milly.presentation.bind(jack, 'formal');
+jackPressinationWithBind('afternoon');
+
+// we will modify function that take 2 arguments but when passed as callback function to another function that function only accept one argument so we will fix that with bind
+var arr = [1990, 1965, 1937, 2005, 1998];
+function arrayCalc(arr, fn) {
+  var arrRes = [];
+  for (var i = 0; i < arr.length; i++) {
+    arrRes.push(fn(arr[i]));
+  }
+  return arrRes;
+}
+function calculateAge(el) {
+  return 2016 - el;
+}
+function isFullAge(limit, el) {
+  return el >= limit;
+}
+const agesArr = arrayCalc(arr, calculateAge);
+//isFullAge function takes 2 arguments and arrayCalc function only takes one argument
+//first we will call arrayCalc function in which will return another function
+const isFullJapan = arrayCalc(agesArr, isFullAge.bind(this, 20));
+console.log(agesArr);
+console.log(isFullJapan);
+
+//------------------------------------------------------------------------------------------
+
+//challange 1:15:40
+const Question = function(question, answers, correctAnswer) {
+  (this.question = question),
+    (this.answers = answers),
+    (this.correctAnswer = correctAnswer);
+};
+
+Question.prototype.displayQuestion = function() {
+  console.log(this.question);
+  for (i = 0; i < this.answers.length; i++) {
+    console.log(i + ':' + this.answers[i]);
+  }
+};
+
+Question.prototype.checkCorrectAns = function(answer, cb) {
+  var sc;
+  if (answer == this.correctAnswer) {
+    console.log('correct answer');
+    sc = cb(true);
+  } else {
+    console.log('please try again');
+    sc = cb(false);
+  }
+  this.displayScore(sc);
+};
+
+Question.prototype.displayScore = function(score) {
+  console.log('your score is' + score, '-------------');
+};
+
+const question1 = new Question(
+  'Is js the coolest programming language in the world',
+  ['yes', 'no', 'maybe'],
+  0
+);
+const question2 = new Question('Do you think js is fun', ['yes', 'no'], 0);
+const question3 = new Question(
+  'how do you describe programming',
+  ['hard', 'boring', 'fun'],
+  2
+);
+
+const questions = [question1, question2, question3];
+
+function scoreCount() {
+  var sc = 0;
+  return function(correct) {
+    if (correct) {
+      sc++;
+    }
+    return sc;
+  };
+}
+
+const keepScore = scoreCount();
+
+const nextQuestion = function() {
+  const randomN = Math.floor(Math.random() * questions.length);
+  // console.log(questions[randomN]);
+  questions[randomN].displayQuestion();
+  const answer = prompt('please enter the correct answer');
+  questions[randomN].checkCorrectAns(answer, keepScore);
+
+  if (answer !== 'exit') {
+    nextQuestion();
+  }
+};
+nextQuestion();
